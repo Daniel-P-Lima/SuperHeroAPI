@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Mapster;
+using Microsoft.AspNetCore.Mvc;
+using SuperHeroAPI.Data.Dto;
 using SuperHeroAPI.Entities;
 using SuperHeroAPI.Interfaces;
 
@@ -20,7 +22,8 @@ public class SuperHeroController(ISuperHeroService service) : ControllerBase
         if (heroes == null || heroes.Count == 0)
             return NotFound("No heroes found.");
 
-        return Ok(heroes);
+        var response = heroes.Adapt<List<SuperHeroGetAllDto>>();
+        return Ok(response);
     }
 
     [HttpGet("{id}")]
@@ -30,35 +33,44 @@ public class SuperHeroController(ISuperHeroService service) : ControllerBase
         if (hero == null)
             return NotFound("Hero not found.");
 
-        return Ok(hero);
+        var response = hero.Adapt<SuperHeroGetDto>();
+        return Ok(response);
 
     }
 
     [HttpPost]
-    public async Task<ActionResult<SuperHero>> CreateSuperHero(SuperHero newHero)
+    public async Task<ActionResult<SuperHero>> CreateSuperHero(SuperHeroCreateDto newHero)
     {
-        var hero = await service.CreateSuperHero(newHero);
+        var hero = newHero.Adapt<SuperHero>();
+        var created = await service.CreateSuperHero(hero);
 
-        return Ok(hero);
+        var read = created.Adapt<SuperHeroGetDto>();
+
+        return Ok(read);
     }
 
     [HttpPut]
-    public async Task<ActionResult<SuperHero>> UpdateSuperHero(SuperHero updatedHero)
+    public async Task<ActionResult<SuperHero>> UpdateSuperHero(SuperHeroUpdateDto updatedHero)
     {
-        var hero = await service.UpdateSuperHeroService(updatedHero);
+
+        var hero = updatedHero.Adapt<SuperHero>();
+        
         if (hero == null)
         {
             return NotFound("Hero not found.");
         }
 
-        return Ok(hero);
+        var updated = await service.UpdateSuperHeroService(hero);
+        var read = updated.Adapt<SuperHeroGetDto>();
+
+        return Ok(read);
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<SuperHero>> DeleteSuperHero(int id)
     {
         var hero = await service.DeleteSuperHero(id);
-        if (hero == null)
+        if (hero)
         {
             return NotFound("Hero not found.");
         }
