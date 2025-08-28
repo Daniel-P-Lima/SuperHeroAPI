@@ -52,7 +52,7 @@ public class SuperHeroService(DataContext _context) : ISuperHeroService
     public async Task<bool> DeleteSuperHero(int id)
     {
         var hero = await _context.SuperHeroes.FindAsync(id);
-        if (hero == null)
+        if (hero is null)
         {
             return false;
         }
