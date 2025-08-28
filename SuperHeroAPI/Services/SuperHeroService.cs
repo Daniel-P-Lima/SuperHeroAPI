@@ -7,7 +7,7 @@ namespace SuperHeroAPI.Services;
 
 public class SuperHeroService(DataContext _context) : ISuperHeroService
 {
-   public async Task<List<SuperHero>> GetAllSuperHeroesService()
+   public async Task<List<SuperHero>?> GetAllSuperHeroesService()
     {
         var heroes = await _context.SuperHeroes.ToListAsync();
         if (heroes == null || heroes.Count == 0)
@@ -16,7 +16,7 @@ public class SuperHeroService(DataContext _context) : ISuperHeroService
         }
         return heroes;
     }
-    public async Task<SuperHero> GetSuperHeroById(int id)
+    public async Task<SuperHero?> GetSuperHeroById(int id)
     {
         var hero = await _context.SuperHeroes.FindAsync(id);
         if (hero == null)
@@ -31,7 +31,7 @@ public class SuperHeroService(DataContext _context) : ISuperHeroService
         await _context.SaveChangesAsync();
         return newHero;
     }
-    public async Task<SuperHero> UpdateSuperHeroService(SuperHero updatedHero)
+    public async Task<SuperHero?> UpdateSuperHeroService(SuperHero updatedHero)
     {
         var hero = await _context.SuperHeroes.FindAsync(updatedHero.Id);
         if (hero == null)
