@@ -70,7 +70,7 @@ public class SuperHeroController(ISuperHeroService service) : ControllerBase
     public async Task<ActionResult<SuperHero>> DeleteSuperHero(int id)
     {
         var hero = await service.DeleteSuperHero(id);
-        if (hero)
+        if (!hero)
         {
             return NotFound("Hero not found.");
         }
